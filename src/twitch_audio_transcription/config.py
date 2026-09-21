@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 
-from pydantic import BaseModel, Field, HttpUrl, model_validator
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
 
 from .models import TranscriptionDevice
 
@@ -12,12 +13,22 @@ from .models import TranscriptionDevice
 class AudioJobConfig(BaseModel):
     """A transcription job with exactly one input source."""
 
+    model_config = ConfigDict(protected_namespaces=())
+
     media_path: Path | None = None
     vod_url: HttpUrl | None = None
     start_seconds: float | None = Field(default=None, ge=0)
     end_seconds: float | None = Field(default=None, ge=0)
     browser_cookie_source: str | None = None
     transcription_device: TranscriptionDevice = "auto"
+    output_dir: Path = Path("outputs")
+    job_id: str = "audio-job"
+    model_size: str = "small"
+    language: str | None = None
+    compute_type: str | None = None
+    vad_filter: bool = True
+    batch_size: int | None = Field(default=None, ge=1)
+    cpu_threads: int | None = Field(default=None, ge=1)
 
     @model_validator(mode="after")
     def validate_job(self) -> "AudioJobConfig":
@@ -31,6 +42,8 @@ class AudioJobConfig(BaseModel):
             raise ValueError("end_seconds must be greater than start_seconds")
         if self.media_path is not None and not self.media_path.is_file():
             raise ValueError(f"media_path does not exist or is not a file: {self.media_path}")
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*", self.job_id):
+            raise ValueError("job_id may contain only letters, numbers, dot, underscore, and hyphen")
         return self
 
     @classmethod
