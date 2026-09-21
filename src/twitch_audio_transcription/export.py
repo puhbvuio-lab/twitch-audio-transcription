@@ -35,7 +35,12 @@ def _timestamp(seconds: float, separator: str) -> str:
 
 def export_transcript(segments: Iterable[TranscriptSegment], paths: AudioJobPaths) -> ExportArtifacts:
     canonical = list(segments)
-    artifacts = ExportArtifacts(paths.transcript_dir / "transcript.json", paths.transcript_dir / "transcript.csv", paths.transcript_dir / "transcript.srt", paths.transcript_dir / "transcript.vtt")
+    artifacts = ExportArtifacts(
+        paths.transcript_dir / "转写结果.json",
+        paths.transcript_dir / "转写结果.csv",
+        paths.transcript_dir / "转写结果.srt",
+        paths.transcript_dir / "转写结果.vtt",
+    )
     payload = {"segments": [segment.to_dict() for segment in canonical]}
     artifacts.json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     fields = ["start_seconds", "end_seconds", "text", "language", "average_log_probability"]

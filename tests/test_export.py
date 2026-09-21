@@ -18,6 +18,10 @@ def test_export_derives_all_formats_from_one_canonical_segment(tmp_path: Path) -
 
     artifacts = export_transcript(segments, paths)
 
+    assert artifacts.json_path.name == "转写结果.json"
+    assert artifacts.csv_path.name == "转写结果.csv"
+    assert artifacts.srt_path.name == "转写结果.srt"
+    assert artifacts.vtt_path.name == "转写结果.vtt"
     payload = json.loads(artifacts.json_path.read_text(encoding="utf-8"))
     row = next(csv.DictReader(artifacts.csv_path.open(encoding="utf-8")))
     assert payload["segments"][0]["start_seconds"] == 0.999

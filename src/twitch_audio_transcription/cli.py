@@ -101,7 +101,7 @@ def run_transcribe(config: AudioJobConfig) -> list[TranscriptSegment]:
 def run_export(config: AudioJobConfig) -> ExportArtifacts:
     paths, state = _paths(config)
     segments = run_transcribe(config)
-    files = [paths.transcript_dir / name for name in ("transcript.json", "transcript.csv", "transcript.srt", "transcript.vtt")]
+    files = [paths.transcript_dir / name for name in ("转写结果.json", "转写结果.csv", "转写结果.srt", "转写结果.vtt")]
     fingerprint = {"canonical_sha256": sha256_file(paths.transcript_dir / "canonical.json"), "format": "json-csv-srt-vtt"}
     if not state.should_run("export", fingerprint, files):
         return ExportArtifacts(*files)
