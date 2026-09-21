@@ -1,0 +1,6 @@
+{
+  "vod_url": "https://www.twitch.tv/videos/1234567890",
+  "start_seconds": 60,
+  "end_seconds": 360,
+  "transcription_device": "cpu"
+}
